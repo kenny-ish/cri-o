@@ -14,10 +14,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"go.podman.io/common/pkg/seccomp"
 	json "github.com/json-iterator/go"
 	"github.com/opencontainers/runtime-spec/specs-go"
 	libseccomp "github.com/seccomp/libseccomp-golang"
+	"go.podman.io/common/pkg/seccomp"
 	"golang.org/x/sys/unix"
 
 	"github.com/cri-o/cri-o/internal/log"
@@ -308,7 +308,7 @@ func handleNewMessage(sockfd int) (uintptr, error) {
 	oobSpace := unix.CmsgSpace(4)
 	oob := make([]byte, oobSpace)
 
-	n, oobn, _, _, err := unix.Recvmsg(sockfd, stateBuf, oob, 0)
+	n, oobn, _, _, err := unix.Recvmsg(sockfd, stateBuf, oob, unix.MSG_CMSG_CLOEXEC)
 	if err != nil {
 		return 0, err
 	}
